@@ -10,6 +10,9 @@ export default function SignInPage({ onSignedIn }) {
   const [isCreatingAccount, setIsCreatingAccount] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const authSetupMessage = import.meta.env.PROD
+    ? 'Authentication is not configured for this deployment. Add VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY in Netlify environment variables, then redeploy.'
+    : 'Add VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to frontend/.env, then restart Vite.';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -110,7 +113,7 @@ export default function SignInPage({ onSignedIn }) {
 
           {!isSupabaseConfigured && (
             <div role="alert" className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
-              Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` to `frontend/.env`, then restart Vite.
+              {authSetupMessage}
             </div>
           )}
           {error && <div role="alert" className="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">{error}</div>}

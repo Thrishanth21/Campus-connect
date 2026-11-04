@@ -14,10 +14,20 @@ app = Flask(__name__)
 
 @app.after_request
 def add_cors_headers(response):
-    # Local Vite development origin. Set FRONTEND_ORIGIN for a deployed frontend.
     origin = request.headers.get("Origin")
-    allowed_origin = os.environ.get("FRONTEND_ORIGIN", "http://localhost:3000")
-    if origin in {allowed_origin, "http://127.0.0.1:3000"}:
+    allowed_origins = {
+        value.strip()
+        for value in os.environ.get("FRONTEND_ORIGIN", "").split(",")
+        if value.strip()
+    }
+    allowed_origins.update(
+        {
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+            "https://intelcampus-connect.netlify.app",
+        }
+    )
+    if origin in allowed_origins:
         response.headers["Access-Control-Allow-Origin"] = origin
         response.headers["Vary"] = "Origin"
         response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
